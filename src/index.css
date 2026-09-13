@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+/* ============================================================
+   Asset Sirius — Design System Foundations
+   Dark, premium, private-banking. Electric cobalt on near-black,
+   amber for attention, restrained hairlines and generous space.
+   ============================================================ */
+
+@theme {
+  /* Ground */
+  --color-bg: #08090c;
+  --color-bg-elevated: #0c0e13;
+  --color-surface: #111318;
+  --color-surface-hover: #171a21;
+  --color-surface-active: #1c2029;
+
+  /* Structure */
+  --color-border: #1e222b;
+  --color-border-strong: #2b303b;
+
+  /* Text */
+  --color-text: #f4f6fa;
+  --color-text-secondary: #8b909c;
+  --color-text-muted: #5c616d;
+  --color-text-disabled: #3c414c;
+
+  /* Brand — electric cobalt */
+  --color-brand: #2f6bff;
+  --color-brand-hover: #4a7dff;
+  --color-brand-active: #1f52d6;
+  --color-brand-soft: #12203f;
+  --color-brand-text: #7ea2ff;
+
+  /* Status */
+  --color-success: #2fae74;
+  --color-success-soft: #0f2a20;
+  --color-warning: #e0a028;
+  --color-warning-soft: #2a2110;
+  --color-danger: #e5484d;
+  --color-danger-soft: #2c1416;
+  --color-info: #4a7dff;
+
+  /* Type */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Typographic scale */
+.t-display {
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.t-h1 {
+  font-size: 1.75rem;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.t-h2 {
+  font-size: 1.3rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.t-h3 {
+  font-size: 1.05rem;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.t-body {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  font-weight: 400;
+}
+.t-small {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.t-caption {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.t-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.t-kpi {
+  font-family: var(--font-mono);
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus ring — accessible, brand */
+.focusable:focus-visible,
+input:focus-visible,
+button:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Scrollbar — hidden until scroll */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  background-clip: content-box;
+}
+
+@keyframes sirius-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.anim-fade {
+  animation: sirius-fade 0.35s ease both;
+}
+@keyframes sirius-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.anim-spin {
+  animation: sirius-spin 0.7s linear infinite;
+}
+@keyframes sirius-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-hover) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: sirius-shimmer 1.6s ease-in-out infinite;
+}
+@keyframes sirius-toast {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.anim-toast {
+  animation: sirius-toast 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
