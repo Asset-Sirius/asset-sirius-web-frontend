@@ -274,8 +274,8 @@ export function Toggle({
       >
         <span
           className={cx(
-            "absolute top-[3px] h-4 w-4 rounded-full bg-white shadow transition-transform",
-            checked ? "translate-x-[19px]" : "translate-x-[3px]",
+            "absolute left-[3px] top-[3px] h-4 w-4 rounded-full bg-white shadow transition-transform",
+            checked ? "translate-x-4" : "translate-x-0",
           )}
         />
       </button>
