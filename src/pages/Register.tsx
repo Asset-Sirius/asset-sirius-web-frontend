@@ -15,7 +15,6 @@ export default function Register({
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [bindingType, setBindingType] = useState<"none" | "fkGerente" | "fkGestorFundo">("none")
-  const [bindingId, setBindingId] = useState("")
   const [loading, setLoading] = useState(false)
   const [emailError, setEmailError] = useState("")
   const [banner, setBanner] = useState<null | { tone: "danger"; message: string }>(null)
@@ -40,9 +39,12 @@ export default function Register({
       return
     }
 
+    // When a binding type is selected we send the corresponding field as null.
+    // The backend/database will handle any ID generation or association. We
+    // intentionally do not allow entering an ID on the client side.
     const payload: any = { email, password }
-    if (bindingType === "fkGerente") payload.fkGerente = bindingId || null
-    if (bindingType === "fkGestorFundo") payload.fkGestorFundo = bindingId || null
+    if (bindingType === "fkGerente") payload.fkGerente = null
+    if (bindingType === "fkGestorFundo") payload.fkGestorFundo = null
 
     setLoading(true)
     try {
@@ -144,19 +146,10 @@ export default function Register({
               onChange={(v) => setBindingType(v as any)}
               options={[
                 { value: "none", label: "Nenhuma" },
-                { value: "fkGerente", label: "fkGerente" },
-                { value: "fkGestorFundo", label: "fkGestorFundo" },
+                { value: "fkGerente", label: "Gerente" },
+                { value: "fkGestorFundo", label: "Gestor de Fundo" },
               ]}
             />
-            {bindingType !== "none" && (
-              <Input
-                label={bindingType === "fkGerente" ? "ID do Gerente (opcional)" : "ID do Gestor/Fundo (opcional)"}
-                name="bindingId"
-                placeholder="12345"
-                value={bindingId}
-                onChange={(e) => setBindingId(e.target.value)}
-              />
-            )}
 
             <div className="flex items-center justify-between">
               <Checkbox checked={autoLogin} onChange={setAutoLogin} label="Entrar automaticamente após registrar" />
