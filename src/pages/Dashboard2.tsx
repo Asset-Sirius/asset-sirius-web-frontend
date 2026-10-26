@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HeartHandshake, PhoneCall, Repeat2, Target } from "lucide-react"
 import { PageHeader } from "../components/blocks"
+import { env } from "../env"
 import { Card, Select, StatusDot, Tabs } from "../components/ui"
 
 const PERIODS = [
@@ -50,8 +51,9 @@ export function Dashboard2() {
       {/* Grafana dashboard 2 embeds - replacing mocked KPIs and panels */}
       <div className="mt-4">
         {(() => {
-          // Read host from Vite env at build time; fall back to the previous value
-          const GRAFANA_HOST = import.meta.env.VITE_GRAFANA_HOST || "http://23.23.235.114:3000"
+          // Read host from runtime-injectable env (window.__ENV__) first,
+          // then fall back to Vite's build-time env variables or the hardcoded default.
+          const GRAFANA_HOST = env("VITE_GRAFANA_HOST") || "http://23.23.235.114:3000"
           const panelSrcs = [
             // 1
             `${GRAFANA_HOST}/d-solo/ad2rknz/dashboard-gestao-estrategico-tatico?orgId=1&from=1777248000000&to=1780012800000&timezone=browser&theme=dark&panelId=panel-7&__feature.dashboardScene=true`,

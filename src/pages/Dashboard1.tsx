@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { AlertTriangle, ArrowUpRight, Banknote, TrendingDown, Users2 } from "lucide-react"
 import { GrafanaPanel, KpiCard, PageHeader } from "../components/blocks"
+import { env } from "../env"
 import { Badge, Button, Card, Select } from "../components/ui"
 
 const PERIODS = [
@@ -47,8 +48,9 @@ export function Dashboard1() {
         {/* Replace localhost with the provided Grafana host and render panels in the exact order requested
             The panel list is intentionally ordered left-to-right, top-to-bottom. */}
         {(() => {
-          // Read host from Vite env at build time; fall back to the previous value
-          const GRAFANA_HOST = import.meta.env.VITE_GRAFANA_HOST
+          // Read host from runtime-injectable env (window.__ENV__) first,
+          // then fall back to Vite's build-time env variables.
+          const GRAFANA_HOST = env("VITE_GRAFANA_HOST")
           const panelSrcs = [
             // 1
             `${GRAFANA_HOST}/d-solo/adbbk58/dashboard-gerente-operacional?orgId=1&from=1791978991199&to=1792000591199&timezone=browser&var-query0=fg183dshcjksgd&theme=dark&panelId=panel-11&__feature.dashboardScene=true`,

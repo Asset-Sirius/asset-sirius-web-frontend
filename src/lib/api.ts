@@ -1,10 +1,13 @@
 // Lightweight fetch-based API client using Vite build-time env (import.meta.env).
 // This client prefers build-time backend variables:
 // - VITE_BACKEND_HOST and VITE_BACKEND_PORT (host + port, default port 8080)
-const metaEnv = (typeof import.meta !== 'undefined' ? (import.meta as any).env : {}) || {};
+// Read Vite build-time env variables directly, but prefer a runtime
+// overridable `window.__ENV__` when available. Use the `env` helper so
+// both dev/build and container runtime env injection work.
+import { env } from "../env";
 
-const backendHost = metaEnv?.VITE_BACKEND_HOST;
-const backendPort = metaEnv?.VITE_BACKEND_PORT || '8080';
+const backendHost = env("VITE_BACKEND_HOST") || undefined;
+const backendPort = env("VITE_BACKEND_PORT") || '8080';
 
 const API_BASE: string = backendHost ? `http://${backendHost}:${backendPort}` : '';
 
