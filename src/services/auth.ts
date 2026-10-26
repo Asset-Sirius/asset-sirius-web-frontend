@@ -12,35 +12,29 @@ export type RegisterRequest = {
   fkGestorFundo?: string | number | null;
 };
 
-export type AuthResponse = {
-  accessToken: string;
-  expiresIn?: number;
-  user?: Record<string, any>;
-};
-
-const STORAGE_KEY = 'accessToken';
+// The backend no longer issues JWT access tokens for authentication.
+// Login simply sends email+password and the server responds with
+// success/failure (and optionally user data). We keep the function
+// signature generic to accept whatever the backend returns.
+export type AuthResponse = any;
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
-  const res = await api.post<AuthResponse>('/api/auth/login', { email, password });
-  const accessToken = (res as any)?.accessToken;
-  if (accessToken) {
-    localStorage.setItem(STORAGE_KEY, accessToken);
-    setAuthToken(accessToken);
-  }
-  return res;
+  // Send credentials to the backend. Do NOT store or set any access
+  // token here — authentication is handled server-side now.
+  return api.post<AuthResponse>('/api/auth/login', { email, password });
 }
 
 export async function register(payload: RegisterRequest): Promise<any> {
   return api.post('/api/auth/register', payload);
 }
 
+// Previously the client restored a saved token from localStorage and
+// injected it into the API client. With JWTs removed, these helpers
+// are no-ops but are kept for compatibility with callers.
 export function loadTokenFromStorage(): string | null {
-  const t = localStorage.getItem(STORAGE_KEY);
-  if (t) setAuthToken(t);
-  return t;
+  return null;
 }
 
 export function clearAuth() {
-  localStorage.removeItem(STORAGE_KEY);
-  setAuthToken(null);
+  // noop
 }
