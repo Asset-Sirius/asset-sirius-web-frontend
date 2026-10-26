@@ -50,7 +50,8 @@ export function Dashboard2() {
       {/* Grafana dashboard 2 embeds - replacing mocked KPIs and panels */}
       <div className="mt-4">
         {(() => {
-          const GRAFANA_HOST = "http://54.91.255.128:3000"
+          // Read host from Vite env at build time; fall back to the previous value
+          const GRAFANA_HOST = import.meta.env.VITE_GRAFANA_HOST || "http://23.23.235.114:3000"
           const panelSrcs = [
             // 1
             `${GRAFANA_HOST}/d-solo/ad2rknz/dashboard-gestao-estrategico-tatico?orgId=1&from=1777248000000&to=1780012800000&timezone=browser&theme=dark&panelId=panel-7&__feature.dashboardScene=true`,

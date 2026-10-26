@@ -47,7 +47,8 @@ export function Dashboard1() {
         {/* Replace localhost with the provided Grafana host and render panels in the exact order requested
             The panel list is intentionally ordered left-to-right, top-to-bottom. */}
         {(() => {
-          const GRAFANA_HOST = "http://54.91.255.128:3000"
+          // Read host from Vite env at build time; fall back to the previous value
+          const GRAFANA_HOST = import.meta.env.VITE_GRAFANA_HOST
           const panelSrcs = [
             // 1
             `${GRAFANA_HOST}/d-solo/adbbk58/dashboard-gerente-operacional?orgId=1&from=1791978991199&to=1792000591199&timezone=browser&var-query0=fg183dshcjksgd&theme=dark&panelId=panel-11&__feature.dashboardScene=true`,

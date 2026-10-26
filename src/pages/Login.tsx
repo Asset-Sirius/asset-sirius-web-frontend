@@ -2,23 +2,18 @@ import { useState } from "react"
 import { ArrowRight, Headset, Lock, Mail, ShieldCheck, WifiOff } from "lucide-react"
 import { SiriusMark } from "../components/Logo"
 import { Alert, Button, Input, PasswordInput } from "../components/ui"
+import { login } from "../services/auth"
+import Register from "./Register"
 
-/**
- * Demo credentials:
- *   admin@assetsirius.com.br      → Administrador (todas as páginas)
- *   analista@assetsirius.com.br   → Analista (somente dashboards)
- *   qualquer senha com 4+ caracteres.
- *   Use "bloqueado" no e-mail para ver o estado de conta bloqueada,
- *   "offline" para simular erro de conexão.
- */
 export function Login({ onSuccess }: { onSuccess: (email: string) => void }) {
+  const [showRegister, setShowRegister] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [emailError, setEmailError] = useState("")
   const [banner, setBanner] = useState<null | { tone: "danger"; kind: "invalid" | "locked" | "offline" }>(null)
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault()
     setBanner(null)
     setEmailError("")
@@ -27,14 +22,39 @@ export function Login({ onSuccess }: { onSuccess: (email: string) => void }) {
       setEmailError("Informe um e-mail corporativo válido.")
       return
     }
+
+    if (password.length < 4) {
+      setBanner({ tone: "danger", kind: "invalid" })
+      return
+    }
+
     setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
-      if (email.includes("offline")) return setBanner({ tone: "danger", kind: "offline" })
-      if (email.includes("bloqueado")) return setBanner({ tone: "danger", kind: "locked" })
-      if (password.length < 4) return setBanner({ tone: "danger", kind: "invalid" })
+    try {
+      await login(email, password)
       onSuccess(email)
-    }, 1300)
+    } catch (err: any) {
+      const status = err?.status ?? (err?.body && err.body.status) ?? null
+      const msg = err?.message || (err?.body && err.body.message) || ''
+
+      if (status === 401) {
+        setBanner({ tone: "danger", kind: "invalid" })
+      } else if (status === 423 || /bloquead|locked/i.test(msg)) {
+        setBanner({ tone: "danger", kind: "locked" })
+      } else if (status === 0 || /timed out|Failed to fetch/i.test(msg)) {
+        setBanner({ tone: "danger", kind: "offline" })
+      } else {
+        // fallback to invalid credentials for unknown errors
+        setBanner({ tone: "danger", kind: "invalid" })
+        // Optionally log to console for debugging
+        // console.error('Login error', err)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (showRegister) {
+    return <Register onCancel={() => setShowRegister(false)} onSuccess={onSuccess} />
   }
 
   return (
@@ -133,6 +153,12 @@ export function Login({ onSuccess }: { onSuccess: (email: string) => void }) {
                 suporte@assetsirius.com.br
               </a>
             </p>
+          </div>
+
+          <div className="mt-4 flex items-center justify-center">
+            <button type="button" className="text-[0.875rem] text-[var(--color-text-secondary)] hover:underline" onClick={() => setShowRegister(true)}>
+              Ainda não tem conta? Criar conta
+            </button>
           </div>
         </div>
 
