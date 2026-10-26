@@ -20,8 +20,10 @@ FROM nginx:stable-alpine AS runtime
 # Copy built files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Replace default nginx config with SPA-friendly config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Replace default nginx config with SPA-friendly config template
+# Use the nginx template path so the image entrypoint can render it with
+# runtime variables (no trailing slash after the port so paths are preserved).
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy entrypoint script that writes runtime env to /usr/share/nginx/html/env.js
 COPY docker-entrypoint.d/40-env.sh /docker-entrypoint.d/40-env.sh

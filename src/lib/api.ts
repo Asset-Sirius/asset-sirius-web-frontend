@@ -6,10 +6,9 @@
 // both dev/build and container runtime env injection work.
 import { env } from "../env";
 
-const backendHost = env("VITE_BACKEND_HOST") || undefined;
-const backendPort = env("VITE_BACKEND_PORT") || '8080';
-
-const API_BASE: string = backendHost ? `http://${backendHost}:${backendPort}` : '';
+// Use a relative base for API calls. The nginx proxy will forward /api/* to the
+// backend at runtime. Do NOT read VITE_BACKEND_HOST or VITE_BACKEND_PORT here.
+const API_BASE: string = "";
 
 let authToken: string | null = null;
 
