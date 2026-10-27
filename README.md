@@ -92,14 +92,16 @@ pnpm format
 
 ## 👤 Acessos demonstrativos 
 
-Na tela de login, informe um e-mail válido e uma senha com pelo menos quatro caracteres.
+No desenvolvimento local (`pnpm dev`), o login simulado é habilitado automaticamente e não depende do backend. Informe um e-mail válido e uma senha com pelo menos quatro caracteres.
 
 | E-mail | Perfil | Permissões |
 | --- | --- | --- |
 | `admin@assetsirius.com.br` | Administrador | Dashboards, funcionários e perfis |
 | `analista@assetsirius.com.br` | Analista | Dashboards |
 
-O fluxo de autenticação é simulado no cliente. Para testar cenários alternativos, inclua `bloqueado` ou `offline` no e-mail informado. Qualquer senha com quatro ou mais caracteres é aceita quando não há erro simulado.
+Use `admin@assetsirius.com.br` com qualquer senha de quatro ou mais caracteres para acessar como administrador. Use `analista@assetsirius.com.br` para acessar como analista. Para testar cenários alternativos, inclua `bloqueado` ou `offline` no e-mail informado.
+
+O mock pode ser habilitado explicitamente em outros ambientes com `VITE_USE_MOCK_AUTH=true`. Para usar o backend real durante um build de desenvolvimento, defina `VITE_USE_MOCK_AUTH=false`.
 
 <a id="estrutura-do-projeto"></a>
 

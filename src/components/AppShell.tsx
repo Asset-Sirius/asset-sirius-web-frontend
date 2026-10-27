@@ -17,18 +17,18 @@ export type Route = ModuleKey | "settings"
 export type CurrentUser = { name: string; profile: string; email: string }
 
 const NAV: { key: Route; label: string; icon: ReactNode }[] = [
-  { key: "dashboard1", label: "Dashboard 1", icon: <LayoutDashboard size={18} /> },
-  { key: "dashboard2", label: "Dashboard 2", icon: <LineChart size={18} /> },
+  { key: "dashboard1", label: "Dashboard Gerente", icon: <LayoutDashboard size={18} /> },
+  { key: "dashboard2", label: "Dashboard Gestão", icon: <LineChart size={18} /> },
   { key: "employees", label: "Funcionários", icon: <Users size={18} /> },
   { key: "profiles", label: "Perfis", icon: <UserCog size={18} /> },
 ]
 
-const PAGE_META: Record<Route, { title: string; crumb: string }> = {
-  dashboard1: { title: "Monitoramento de resgates", crumb: "Dashboard 1" },
-  dashboard2: { title: "Retenção de cotistas", crumb: "Dashboard 2" },
-  employees: { title: "Funcionários", crumb: "Funcionários" },
-  profiles: { title: "Perfis", crumb: "Perfis" },
-  settings: { title: "Minha conta", crumb: "Configurações" },
+const PAGE_META: Record<Route, { crumb: string }> = {
+  dashboard1: { crumb: "Dashboard Gerente" },
+  dashboard2: { crumb: "Dashboard Gestão" },
+  employees: { crumb: "Funcionários" },
+  profiles: { crumb: "Perfis" },
+  settings: { crumb: "Configurações" },
 }
 
 export function AppShell({
@@ -140,9 +140,6 @@ export function AppShell({
               <ChevronRight size={12} />
               <span className="text-[var(--color-text-secondary)]">{meta.crumb}</span>
             </div>
-            <h1 className="truncate text-[1.05rem] font-semibold tracking-tight text-[var(--color-text)]">
-              {meta.title}
-            </h1>
           </div>
 
           {actions && <div className="ml-auto flex items-center gap-3">{actions}</div>}

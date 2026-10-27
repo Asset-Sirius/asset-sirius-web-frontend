@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type ButtonHTMLAttributes,
+  type HTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
 } from "react"
@@ -356,13 +357,18 @@ export function StatusDot({ tone = "neutral", label }: { tone?: Tone; label: str
 }
 
 /* ---------------- Card ---------------- */
-export function Card({ className, children }: { className?: string; children: ReactNode }) {
+export function Card({
+  className,
+  children,
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cx(
         "rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]",
         className,
       )}
+      {...rest}
     >
       {children}
     </div>

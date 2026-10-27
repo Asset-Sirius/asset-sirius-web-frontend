@@ -1,5 +1,9 @@
 {
+  "title": "Asset Sirius",
   "description": "Monitors investment fund shareholders using financial data to predict redemptions, generate alerts, and support retention strategies for fund managers.",
+  "icons": {
+    "icon": "/favicon.svg"
+  },
   "robots": {
     "index": false
   },

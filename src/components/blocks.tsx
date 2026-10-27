@@ -1,5 +1,6 @@
-import type { ReactNode } from "react"
-import { ArrowDownRight, ArrowUpRight, BarChart3 } from "lucide-react"
+import { useEffect, useState, type ReactNode } from "react"
+import { createPortal } from "react-dom"
+import { ArrowDownRight, ArrowUpRight, BarChart3, X } from "lucide-react"
 import { Card } from "./ui"
 
 export function PageHeader({
@@ -111,5 +112,98 @@ export function GrafanaPanel({
         </div>
       </div>
     </Card>
+  )
+}
+
+export function GrafanaCard({
+  src,
+  title,
+  height = 200,
+  className = "",
+}: {
+  src: string
+  title: string
+  height?: number
+  className?: string
+}) {
+  const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    if (!expanded) return
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setExpanded(false)
+    }
+
+    document.addEventListener("keydown", closeOnEscape)
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape)
+      document.body.style.overflow = ""
+    }
+  }, [expanded])
+
+  return (
+    <>
+      <Card
+        className={`cursor-zoom-in overflow-hidden transition-transform hover:scale-[1.01] ${className}`}
+        onClick={() => setExpanded(true)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") setExpanded(true)
+        }}
+        aria-label={`Ampliar ${title}`}
+      >
+        <div className="p-2">
+          <iframe
+            title={title}
+            src={src}
+            width="100%"
+            height={height}
+            frameBorder={0}
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-popups"
+            tabIndex={-1}
+          />
+        </div>
+      </Card>
+
+      {expanded &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex h-screen w-screen items-center justify-center bg-black/70 p-4 backdrop-blur-md sm:p-8"
+            onClick={() => setExpanded(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Visualização ampliada: ${title}`}
+          >
+            <div
+              className="relative box-border h-[92vh] max-h-[900px] w-[96vw] max-w-[1600px] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] p-6 shadow-2xl sm:p-10"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80"
+                aria-label="Fechar visualização ampliada"
+              >
+                <X size={20} />
+              </button>
+              <div className="h-full w-full overflow-hidden rounded-[var(--radius)]">
+                <iframe
+                  title={`${title} ampliado`}
+                  src={src}
+                  width="100%"
+                  height="100%"
+                  frameBorder={0}
+                  sandbox="allow-scripts allow-same-origin allow-popups"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+    </>
   )
 }
