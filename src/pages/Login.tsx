@@ -36,7 +36,10 @@ export function Login({ onSuccess }: { onSuccess: (email: string) => void }) {
       const status = err?.status ?? (err?.body && err.body.status) ?? null
       const msg = err?.message || (err?.body && err.body.message) || ''
 
-      if (status === 401) {
+      if (status === 400) {
+        // Validation error from backend: missing email or password
+        setEmailError("Preencha email e senha")
+      } else if (status === 401) {
         setBanner({ tone: "danger", kind: "invalid" })
       } else if (status === 423 || /bloquead|locked/i.test(msg)) {
         setBanner({ tone: "danger", kind: "locked" })

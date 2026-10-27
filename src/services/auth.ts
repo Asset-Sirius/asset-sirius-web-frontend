@@ -1,4 +1,4 @@
-import api, { setAuthToken } from '../lib/api';
+import api from '../lib/api';
 import { env } from '../env';
 
 export type LoginRequest = {
@@ -13,14 +13,21 @@ export type RegisterRequest = {
   fkGestorFundo?: string | number | null;
 };
 
+// The backend no longer issues JWT access tokens for authentication.
+// Login simply sends email+password and the server responds with
+// success/failure (and optionally user data). We keep the function
+// signature generic to accept whatever the backend returns.
 export type AuthResponse = {
-  accessToken: string;
-  expiresIn?: number;
-  user?: Record<string, any>;
+  user: {
+    id: string;
+    email: string;
+    isAdm: boolean;
+    fkGerente?: string | null;
+    fkGestorFundo?: string | null;
+  };
 };
 
-const STORAGE_KEY = 'accessToken';
-const USE_MOCK_AUTH = import.meta.env.DEV || env('VITE_USE_MOCK_AUTH') === 'true';
+const USE_MOCK_AUTH = env('VITE_USE_MOCK_AUTH') === 'true';
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
   if (USE_MOCK_AUTH) {
@@ -32,23 +39,36 @@ export async function login(email: string, password: string): Promise<AuthRespon
       throw Object.assign(new Error('Servidor indisponível'), { status: 0 });
     }
 
-    const response: AuthResponse = {
-      accessToken: 'local-development-token',
-      user: { email },
+    return {
+      user: {
+        id: 'local-admin',
+        email,
+        isAdm: !email.toLowerCase().includes('analista'),
+      },
     };
-
-    localStorage.setItem(STORAGE_KEY, response.accessToken);
-    setAuthToken(response.accessToken);
-    return response;
   }
 
-  const res = await api.post<AuthResponse>('/api/auth/login', { email, password });
-  const accessToken = (res as any)?.accessToken;
-  if (accessToken) {
-    localStorage.setItem(STORAGE_KEY, accessToken);
-    setAuthToken(accessToken);
+  try {
+    return await api.post<AuthResponse>('/api/auth/login', { email, password });
+  } catch (err: any) {
+    const status = err?.status ?? (err?.body && err.body.status) ?? null;
+    const bodyMessage = err?.body && (err.body.message || err.body?.msg || null);
+
+    if (status === 400) {
+      const e = new Error(bodyMessage || 'Missing email or password');
+      (e as any).status = 400;
+      throw e;
+    }
+
+    if (status === 401) {
+      const e = new Error(bodyMessage || 'Invalid credentials');
+      (e as any).status = 401;
+      throw e;
+    }
+
+    // propagate other errors (including timeouts/status=0) unchanged
+    throw err;
   }
-  return res;
 }
 
 export async function register(payload: RegisterRequest): Promise<any> {
@@ -56,12 +76,8 @@ export async function register(payload: RegisterRequest): Promise<any> {
 }
 
 export function loadTokenFromStorage(): string | null {
-  const t = localStorage.getItem(STORAGE_KEY);
-  if (t) setAuthToken(t);
-  return t;
+  return null;
 }
 
 export function clearAuth() {
-  localStorage.removeItem(STORAGE_KEY);
-  setAuthToken(null);
 }
