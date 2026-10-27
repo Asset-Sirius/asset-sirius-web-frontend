@@ -147,6 +147,7 @@ export function GrafanaCard({
     <>
       <Card
         className={`cursor-zoom-in overflow-hidden transition-transform hover:scale-[1.01] ${className}`}
+        style={{ height }}
         onClick={() => setExpanded(true)}
         role="button"
         tabIndex={0}
@@ -156,16 +157,19 @@ export function GrafanaCard({
         aria-label={`Ampliar ${title}`}
       >
         <div className="p-2">
-          <iframe
-            title={title}
-            src={src}
-            width="100%"
-            height={height}
-            frameBorder={0}
-            loading="lazy"
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            tabIndex={-1}
-          />
+          {/* Container controls visual height; iframe fills it so iframe size stays proportional to the Card */}
+          <div style={{ height }} className="w-full">
+            <iframe
+              title={title}
+              src={src}
+              width="100%"
+              height="100%"
+              frameBorder={0}
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups"
+              tabIndex={-1}
+            />
+          </div>
         </div>
       </Card>
 

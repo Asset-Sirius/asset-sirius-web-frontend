@@ -28,19 +28,24 @@ export function Dashboard2() {
             `${GRAFANA_HOST}/d-solo/ad2rknz/dashboard-gestao-estrategico-tatico?orgId=1&from=1777248000000&to=1780012800000&timezone=browser&theme=dark&panelId=panel-6&__feature.dashboardScene=true`,
             // 5
             `${GRAFANA_HOST}/d-solo/ad2rknz/dashboard-gestao-estrategico-tatico?orgId=1&from=1777248000000&to=1780012800000&timezone=browser&theme=dark&panelId=panel-3&__feature.dashboardScene=true`,
-            // 6 (duplicate of 5 per provided list)
-            `${GRAFANA_HOST}/d-solo/ad2rknz/dashboard-gestao-estrategico-tatico?orgId=1&from=1777248000000&to=1780012800000&timezone=browser&theme=dark&panelId=panel-3&__feature.dashboardScene=true`,
+            // 6: use panel-1 (user-provided iframe) but built from GRAFANA_HOST
+            `${GRAFANA_HOST}/d-solo/ad2rknz/dashboard-gestao-estrategico-tatico?from=1777248000000&to=1780012800000&timezone=browser&orgId=1&theme=dark&panelId=panel-1&__feature.dashboardScene=true`,
           ]
 
           return (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {panelSrcs.map((src, i) => (
-                <GrafanaCard
-                  key={i}
-                  src={src}
-                  title={`grafana-dashboard2-panel-${i + 1}`}
-                />
-              ))}
+              {(() => {
+                // Heights chosen to match visual proportions from the provided screenshot.
+                const heights = [340, 340, 260, 260, 420, 420]
+                return panelSrcs.map((src, i) => (
+                  <GrafanaCard
+                    key={i}
+                    src={src}
+                    title={`grafana-dashboard2-panel-${i + 1}`}
+                    height={heights[i] ?? 200}
+                  />
+                ))
+              })()}
             </div>
           )
         })()}
