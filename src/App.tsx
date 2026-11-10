@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { AppShell, type CurrentUser, type Route } from "./components/AppShell"
+import { InstanceBadge } from "./components/InstanceBadge"
 import { ToastProvider } from "./components/ui"
 import { Login } from "./pages/Login"
 import { Dashboard1 } from "./pages/Dashboard1"
@@ -45,6 +46,7 @@ export default function App() {
   if (!session) {
     return (
       <ToastProvider>
+        <InstanceBadge />
         <Login
           onSuccess={(email) => {
             const s = resolveSession(email)
@@ -62,6 +64,7 @@ export default function App() {
 
   return (
     <ToastProvider>
+      <InstanceBadge />
       <AppShell
         route={route}
         onNavigate={navigate}
